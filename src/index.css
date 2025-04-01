@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&family=Roboto+Slab:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import "tailwindcss";
+
+@custom-variant blue (&:where(.blue, .blue *));
+@custom-variant pink (&:where(.pink, .pink *));
+
+@theme{
+    --font-kum: "Kumbh Sans", "sans-serfif";
+    --font-rob: "Roboto Slab", "serfif";
+    --font-mono: "Space Mono", "monospace";
+
+    --color-red: #F87070;
+    --color-cyan: #70F3F8;
+    --color-pink: #D881F8;
+    --color-gray: #D7E0FF;
+    --color-blue: #1E213F;
+    --color-dirtywhite: #EFF1FA;
+    --color-darkblue: #161932;
+
+    --shadow-custom: rgb(153, 51, 51) 90px 70px 100px 0px;
+    --shadow-custom2: rgb(102, 102, 153) 0px 48px 100px 0px;
+}
+
+.shadows{
+    box-shadow: rgba(22, 25, 50, 1) 40px 50px 100px 30px, rgb(75, 81, 155, 0.4) -70px -50px 100px -10px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+       -moz-appearance: textfield;
+            appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+  }
+
+  .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    z-index: 10;
+  }
