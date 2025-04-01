@@ -6,13 +6,15 @@ const Clock = ({ settings, setSettings, clicked, pomodoro, shortbreak, longbreak
   const [isActive, setIsActive] = useState(false);
   const [displayTime, setDisplayTime] = useState(clicked);
   const [initialSeconds, setInitialSeconds] = useState(0);
+  const [containerSize, setContainerSize] = useState(250);
+  const strokeWidth = 11;
 
   const initializeTimer = (time) => {
     const [minutes, seconds] = time.split(':');
     const secondsTotal = parseInt(minutes) * 60 + parseInt(seconds || 0);
     setTotalSeconds(secondsTotal);
     setInitialSeconds(secondsTotal);
-    setIsActive(false)
+    setIsActive(false);
     setDisplayTime(time);
   };
 
@@ -31,11 +33,10 @@ const Clock = ({ settings, setSettings, clicked, pomodoro, shortbreak, longbreak
           const seconds = newSeconds % 60;
           setDisplayTime(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
           
-          // Gdy timer dojdzie do 0, zatrzymaj odliczanie
           if (newSeconds <= 0) {
-            setIsActive(false); // Zatrzymaj timer
-            setDisplayTime('00:00'); // Upewnij się, że wyświetla 00:00
-            clearInterval(timerId); // Wyczyść interwał
+            setIsActive(false);
+            setDisplayTime('00:00');
+            clearInterval(timerId);
           }
           
           return newSeconds;
@@ -55,35 +56,42 @@ const Clock = ({ settings, setSettings, clicked, pomodoro, shortbreak, longbreak
     setIsActive(false);
   };
 
-  const progressPercentage = initialSeconds > 0 ? (totalSeconds / initialSeconds) * 100 : 100;
+  const updateSize = () => {
+    const isLargeScreen = window.innerWidth >= 1024; 
+    setContainerSize(isLargeScreen ? 339 : 250);
+  };
 
-  // Obwód koła SVG (promień 169.5, obwód = 2 * π * r)
-  const strokeWidth = 11;
-  const radius = 169.5; // Promień koła (339px / 2)
-  const adjustedRadius = radius - strokeWidth / 2; // Dostosowany promień, aby obwódka była wewnątrz
-  const circumference = 2 * Math.PI * adjustedRadius; // Obwód koła
-  const strokeDashoffset = circumference - (progressPercentage / 100) * circumference;
+  useEffect(() => {
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+
+  const progressPercentage = initialSeconds > 0 ? (totalSeconds / initialSeconds) * 100 : 100; 
+  const radius = containerSize / 2;
+  const adjustedRadius = radius - strokeWidth / 2; 
+  const circumference = 2 * Math.PI * adjustedRadius;
+  const strokeDashoffset = ((100 - progressPercentage) / 100) * circumference;
 
   return (
     <div>
       <div className="flex items-center justify-center pt-[45px]">
-        <div className="shadows bg-linear-to-tl from-[#292d56] to-[#101223] tra rounded-full max-w-[410px] min-w-[410px] min-h-[410px] flex items-center justify-center">
-          <div className="flex items-center justify-center bg-darkblue border-darkblue border-15 rounded-full min-w-[366px] min-h-[366px] max-w-[366px] max-h-[366px]">
-            <div className="relative bg-darkblue flex-col min-w-[339px] min-h-[339px] rounded-full flex items-center justify-center">
+        <div className="shadows bg-linear-to-tl from-[#292d56] to-[#101223] tra rounded-full lg:max-w-[410px] min-w-[300px] max-w-[300px] lg:min-w-[410px] lg:min-h-[410px] min-h-[300px] flex items-center justify-center">
+          <div className="flex items-center justify-center bg-darkblue border-darkblue border-15 rounded-full lg:min-w-[366px] lg:min-h-[366px] lg:max-w-[366px] lg:max-h-[366px] min-w-[267px] min-h-[267px] max-w-[267px] max-h-[267px]">
+            <div className="relative bg-darkblue flex-col lg:min-w-[339px] lg:min-h-[339px] min-w-[255px] min-h-[255px] rounded-full flex items-center justify-center">
               {/* SVG dla obwódki */}
               <svg
                 className="absolute"
-                width={339 + strokeWidth} // Zwiększamy rozmiar SVG o grubość obwódki
-                height={339 + strokeWidth}
+                width={containerSize} 
+                height={containerSize}
                 style={{
-                  top: `-${strokeWidth / 2}px`, // Przesunięcie, aby obwódka była wyśrodkowana
-                  left: `-${strokeWidth / 2}px`,
-                  transform: 'rotate(-90deg)', // Obrót SVG, aby zacząć od góry
+                  transform: 'rotate(-90deg)', 
                 }}
               >
                 <circle
-                  cx={(339 + strokeWidth) / 2} // Środek dostosowany do nowego rozmiaru
-                  cy={(339 + strokeWidth) / 2}
+                  cx={containerSize / 2} 
+                  cy={containerSize / 2}
                   r={adjustedRadius}
                   fill="none"
                   className="stroke-red blue:stroke-cyan pink:stroke-pink"
@@ -94,17 +102,17 @@ const Clock = ({ settings, setSettings, clicked, pomodoro, shortbreak, longbreak
                 />
               </svg>
               {/* Zawartość */}
-              <div className="relative z-10 flex flex-col">
-                <h1 className={`text-[100px] ${font === 'mono' ? 'font-normal tracking-tighter' : 'font-bold'} text-gray cursor-default`}>{displayTime}</h1>
+              <div className="relative z-10 flex flex-col items-center">
+                <h1 className={`text-[70px] lg:text-[100px] ${font === 'mono' ? 'font-normal tracking-tighter' : 'font-bold'} text-gray cursor-default`}>{displayTime}</h1>
                 <button
                   onClick={handleStart}
-                  className={`text-gray tracking-[15px] font-bold cursor-pointer hover:text-red ${!isActive ? 'block' : 'hidden'}`}
+                  className={`text-gray tracking-[15px] font-bold cursor-pointer hover:text-red hover:blue:text-cyan hover:pink:text-pink ${!isActive ? 'block' : 'hidden'}`}
                 >
                   START
                 </button>
                 <button
                   onClick={handlePause}
-                  className={`text-gray tracking-[15px] font-bold cursor-pointer hover:text-red ${isActive ? 'block' : 'hidden'}`}
+                  className={`text-gray tracking-[15px] font-bold cursor-pointer hover:text-red hover:blue:text-cyan hover:pink:text-pink ${isActive ? 'block' : 'hidden'}`}
                 >
                   PAUSE
                 </button>

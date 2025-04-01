@@ -19,20 +19,18 @@ function App() {
   useEffect(() => {
     const root = document.getElementById('root');
     
-    // Usuwamy stare klasy czcionek i kolorów, ale nie wszystkie klasy
     root.classList.forEach((className) => {
       if (className.startsWith('font-') || className === 'red' || className === 'blue' || className === 'pink') {
         root.classList.remove(className);
       }
     });
 
-    // Dodajemy nowe klasy
-    root.classList.add(`font-${font}`); // Czcionka
+    root.classList.add(`font-${font}`);
     if(color != ''){
-      root.classList.add(`${color}`); // Kolor tła
+      root.classList.add(`${color}`); 
     }
     
-  }, [font, color]); // Uruchamia się przy zmianie font lub color
+  }, [font, color]); 
 
   return (
     <>
