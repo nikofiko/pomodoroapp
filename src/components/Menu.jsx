@@ -4,7 +4,7 @@ import logo from '../assets/images/logo.svg'
 const Menu = ({clicked, setClicked, pomodoro, shortbreak, longbreak, setActiveMode, activeMode}) => {
 
   return (
-    <div className='flex flex-col justify-center pt-[48px]'>
+    <div className='flex flex-col justify-center pt-[28px]'>
       <div className='flex justify-center'>
         <img src={logo} alt="" />
       </div>
